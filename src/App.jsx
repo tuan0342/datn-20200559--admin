@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import { useAuth } from "./contexts/AuthContext";
 import StoryManagement from "./pages/story/StoryManagement";
 import Home from "./pages/home/Home";
+import StoryRecycleBin from "./pages/story/StoryRecycleBin";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -55,6 +56,18 @@ function App() {
             isAuthenticated ? (
               <Dashboard>
                 <StoryManagement />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/truyen/thung-rac"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <StoryRecycleBin />
               </Dashboard>
             ) : (
               <Navigate to="/" />

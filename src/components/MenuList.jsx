@@ -45,6 +45,10 @@ const MenuList = ({ darkTheme }) => {
               key: "/truyen/quan-ly",
               label: "Quản lý",
             },
+            {
+              key: "/truyen/thung-rac",
+              label: "Thùng rác",
+            },
           ],
         },
         {
