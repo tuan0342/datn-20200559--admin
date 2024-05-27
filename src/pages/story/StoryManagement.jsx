@@ -372,6 +372,7 @@ const StoryManagement = () => {
       }
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       message.error(error);
     }
   };

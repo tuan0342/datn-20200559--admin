@@ -14,6 +14,7 @@ import { useAuth } from "./contexts/AuthContext";
 import StoryManagement from "./pages/story/StoryManagement";
 import Home from "./pages/home/Home";
 import StoryRecycleBin from "./pages/story/StoryRecycleBin";
+import StoryCreation from "./pages/story/StoryCreation";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -39,11 +40,11 @@ function App() {
           }
         />
         <Route
-          path="/truyen/tao-chuyen"
+          path="/truyen/tao-truyen"
           element={
             isAuthenticated ? (
               <Dashboard>
-                <div>Create Management</div>
+                <StoryCreation />
               </Dashboard>
             ) : (
               <Navigate to="/" />
