@@ -62,7 +62,7 @@
 }
 .menu-bar {
   /* height: 87vh; */
-  margin-top: 2rem;
+  margin-top: 0rem;
   display: flex;
   flex-direction: column;
   gap: 15px;
