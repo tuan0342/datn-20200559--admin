@@ -7,6 +7,7 @@ import {
   PoweroffOutlined,
   BarsOutlined,
   AudioOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -71,7 +72,7 @@ const MenuList = ({ darkTheme }) => {
         {
           label: "Truyện chữ",
           key: "/truyen-chu",
-          icon: <AreaChartOutlined />,
+          icon: <FileTextOutlined />,
           children: [
             {
               key: "/truyen-chu/chuong-moi",
@@ -99,6 +100,25 @@ const MenuList = ({ darkTheme }) => {
               key: "/audio/quan-ly",
               label: "Danh sách",
               // type: 'group',
+            },
+          ],
+        },
+        {
+          label: "Thống kê",
+          key: "/thong-ke",
+          icon: <AreaChartOutlined />,
+          children: [
+            {
+              key: "/thong-ke/tuan",
+              label: "Theo Tuần",
+            },
+            {
+              key: "/thong-ke/thang",
+              label: "Theo Tháng",
+            },
+            {
+              key: "/thong-ke/nam",
+              label: "Theo Năm",
             },
           ],
         },

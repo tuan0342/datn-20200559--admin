@@ -15,6 +15,9 @@ import StoryManagement from "./pages/story/StoryManagement";
 import Home from "./pages/home/Home";
 import StoryRecycleBin from "./pages/story/StoryRecycleBin";
 import StoryCreation from "./pages/story/StoryCreation";
+import WeekAnalysis from "./pages/analysis/WeekAnalysis";
+import MonthAnalysis from "./pages/analysis/MonthAnalysis";
+import YearAnalysis from "./pages/analysis/YearAnalysis";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -69,6 +72,43 @@ function App() {
             isAuthenticated ? (
               <Dashboard>
                 <StoryRecycleBin />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        <Route
+          path="/thong-ke/tuan"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <WeekAnalysis />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/thong-ke/thang"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <MonthAnalysis />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/thong-ke/nam"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <YearAnalysis />
               </Dashboard>
             ) : (
               <Navigate to="/" />
