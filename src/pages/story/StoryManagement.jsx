@@ -42,11 +42,6 @@ const StoryManagement = () => {
   const onOkDeleteStory = async (record) => {
     try {
       const { userToken, user } = JSON.parse(localStorage.getItem("user_data"));
-      // const response = await axiosPrivate.delete(`story/delete/${record.id}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${userToken}`,
-      //   },
-      // });
       const response = await axiosPrivate.delete(
         `story/delete_soft/${record.id}`,
         {

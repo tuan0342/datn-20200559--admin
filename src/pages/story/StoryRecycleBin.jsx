@@ -63,7 +63,6 @@ const StoryRecycleBin = () => {
       title: "Bạn có muốn khôi phục truyện này không?",
       okText: "Có",
       cancelText: "Hủy",
-      okType: "danger",
       onOk: () => {
         onOkUndoStory(record);
       },

@@ -85,9 +85,9 @@ const StoryCreation = () => {
     fetchAllGenres();
   }, []);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (selectedImage === null || selectedImage === undefined) {
-      message.error("Please select a cover image!");
+      message.error("Vui lòng chọn ảnh bìa cho truyện!");
       return;
     }
 
@@ -102,20 +102,27 @@ const StoryCreation = () => {
       }
     }
 
-    form.resetFields();
-    setFileList([]);
-    setSelectedImage(null);
-    setPreviewImage("");
-
-    // axios
-    //   .post("https://your-api-endpoint/story", formData)
-    //   .then((response) => {
-    //     message.success("Form submitted successfully");
-    //   })
-    //   .catch((error) => {
-    //     message.error("There was an error submitting the form!");
-    //     console.error("There was an error submitting the form!", error);
-    //   });
+    try {
+      const { userToken, user } = JSON.parse(localStorage.getItem("user_data"));
+      const response = await axiosPrivate.post(`story/create`, formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.data.code === 1000) {
+        message.success("Tạo truyện thành công");
+        form.resetFields();
+        setFileList([]);
+        setSelectedImage(null);
+        setPreviewImage("");
+      } else {
+        message.error("Xảy ra lỗi. Vui lòng thử lại");
+      }
+    } catch (error) {
+      message.error("Xảy ra lỗi. Vui lòng thử lại");
+      console.log(error);
+    }
   };
 
   return (
