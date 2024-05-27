@@ -37,13 +37,17 @@ const MenuList = ({ darkTheme }) => {
           icon: <AppstoreOutlined />,
           children: [
             {
-              key: "/truyen/tao-chuyen",
+              key: "/truyen/tao-truyen",
               label: "Tạo truyện",
               // type: "group",
             },
             {
               key: "/truyen/quan-ly",
               label: "Quản lý",
+            },
+            {
+              key: "/truyen/thung-rac",
+              label: "Thùng rác",
             },
           ],
         },
