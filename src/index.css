@@ -121,11 +121,6 @@
   align-items: center;
   margin-top: 10px;
 }
-.image-row-table {
-  display: "flex";
-  justify-content: "center";
-  align-items: "center";
-}
 /* .custom-table-container {
   width: "100%";
   background-color: aqua;

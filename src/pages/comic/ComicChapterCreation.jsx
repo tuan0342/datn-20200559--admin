@@ -1,100 +1,29 @@
-import {
-  Table,
-  message,
-  Spin,
-  Modal,
-  Input,
-  Select,
-  Space,
-  Button,
-} from "antd";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { Table, message, Spin, Modal, Input, Form, Space, Button } from "antd";
+import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { axiosPrivate } from "../../api/axios";
-import ImageUploadComponent from "../../components/ImageUploadComponent";
-import { formatNumber } from "../../utils/format";
+import MultiImageUpload from "../../components/MultiImageUpload";
 
-const StoryManagement = () => {
+const ComicChapterCreation = () => {
   const [dataSource, setDataSource] = useState([]);
   const [editingStory, setEditingStory] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedStatusId, setSelectedStatusId] = useState(null);
-  const [selectedTypeStoryId, setSelectedTypeStoryId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState([]);
+  const [titleChapter, setTitleChapter] = useState(null);
+  const [chapter, setChapter] = useState(null);
 
   const uploadRef = useRef(null);
 
-  const onDeleteStory = (record) => {
-    Modal.confirm({
-      title: "Bạn có muốn xóa truyện này không?",
-      okText: "Có",
-      cancelText: "Hủy",
-      okType: "danger",
-      onOk: () => {
-        onOkDeleteStory(record);
-      },
-    });
-  };
-
-  const onOkDeleteStory = async (record) => {
-    try {
-      const { userToken, user } = JSON.parse(localStorage.getItem("user_data"));
-      const response = await axiosPrivate.delete(
-        `story/delete_soft/${record.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      if (response.data.code === 1000) {
-        message.success("Đã xóa truyện thành công");
-        setDataSource((pre) => {
-          return pre.filter((story) => story.id !== record.id);
-        });
-      } else {
-        message.error("Xảy ra lỗi. Vui lòng thử lại");
-      }
-    } catch (error) {
-      console.error("Error delete record", error);
-      message.error("Xảy ra lỗi.");
-    }
-  };
-
-  const onEditStory = (record) => {
-    setSelectedStatusId(record.statusId);
-    setSelectedTypeStoryId(record.typeId);
+  const onCreateChapterStory = (record) => {
     setIsEditing(true);
     setEditingStory({ ...record });
   };
 
-  const onOkEditStory = async () => {
+  const onOk = async () => {
     const formData = new FormData();
     if (editingStory.title) {
       formData.append("title", editingStory.title);
-    }
-    if (editingStory.otherTitle) {
-      formData.append("otherTitle", editingStory.otherTitle);
-    }
-    if (editingStory.currentChapter) {
-      formData.append("currentChapter", editingStory.currentChapter);
-    }
-    if (editingStory.author) {
-      formData.append("author", editingStory.author);
-    }
-    if (selectedStatusId) {
-      formData.append("statusId", selectedStatusId);
-    }
-    if (editingStory.summary) {
-      formData.append("summary", editingStory.summary);
-    }
-    if (selectedTypeStoryId) {
-      formData.append("typeId", selectedTypeStoryId);
     }
     if (selectedImage) {
       formData.append("cover", selectedImage.originFileObj);
@@ -124,24 +53,12 @@ const StoryManagement = () => {
       console.error("Error uploading the form data", error);
       message.error("Update Error");
     }
-
-    // setDataSource((pre) => {
-    //   return pre.map((story) => {
-    //     if (story.id === editingStory.id) {
-    //       return editingStory;
-    //     } else {
-    //       return story;
-    //     }
-    //   });
-    // });
   };
 
   const resetEditing = () => {
-    setSelectedTypeStoryId(null);
-    setSelectedStatusId(null);
     setIsEditing(false);
     setEditingStory(null);
-    setSelectedImage(null);
+    setSelectedImage([]);
     if (uploadRef.current) {
       uploadRef.current.clearImages();
     }
@@ -254,14 +171,14 @@ const StoryManagement = () => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width: "12%",
+      width: "20%",
       ...getColumnSearchProps("title"),
     },
     {
       title: "Other Title",
       dataIndex: "otherTitle",
       key: "otherTitle",
-      width: "10%",
+      width: "18%",
       ...getColumnSearchProps("otherTitle"),
     },
     {
@@ -275,7 +192,7 @@ const StoryManagement = () => {
       title: "Author",
       dataIndex: "author",
       key: "author",
-      width: "6%",
+      width: "16%",
       render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
@@ -297,7 +214,7 @@ const StoryManagement = () => {
         },
       ],
       onFilter: (value, record) => record.status.indexOf(value) === 0,
-      width: "8%",
+      width: "12%",
       render: (text) => (
         <div style={{ textAlign: "center", ...getStatusStyle(text) }}>
           {text}
@@ -305,65 +222,19 @@ const StoryManagement = () => {
       ),
     },
     {
-      title: "View",
-      dataIndex: "view",
-      key: "view",
-      defaultSortOrder: "descend",
-      sorter: (a, b) => a.view - b.view,
-      width: "6%",
-      render: (text) => (
-        <div style={{ textAlign: "center" }}>{formatNumber(text)}</div>
-      ),
-    },
-    {
-      title: "Summary",
-      dataIndex: "summary",
-      key: "summary",
-      render: (text) => <div className="custom-cell-long-text">{text}</div>,
-      width: "18%",
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      width: "6%",
-      filters: [
-        {
-          text: "Truyện tranh",
-          value: "Truyện tranh",
-        },
-        {
-          text: "Truyện chữ",
-          value: "Truyện chữ",
-        },
-        {
-          text: "Audio",
-          value: "Audio",
-        },
-      ],
-      onFilter: (value, record) => record.type.indexOf(value) === 0,
-      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
-    },
-    {
       title: "Actions",
       key: "actions",
       width: "7%",
       render: (record) => {
         return (
-          <>
-            <EditOutlined
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <PlusCircleOutlined
               style={{ fontSize: 20 }}
               onClick={() => {
-                onEditStory(record);
+                onCreateChapterStory(record);
               }}
             />
-            <DeleteOutlined
-              onClick={() => {
-                onDeleteStory(record);
-              }}
-              style={{ color: "red", marginLeft: 12, fontSize: 20 }}
-            />
-          </>
+          </div>
         );
       },
     },
@@ -377,7 +248,7 @@ const StoryManagement = () => {
     setIsLoading(true);
     try {
       const { userToken, user } = JSON.parse(localStorage.getItem("user_data"));
-      const { data } = await axiosPrivate.get("story/list", {
+      const { data } = await axiosPrivate.get("story/list/comic", {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
@@ -428,125 +299,71 @@ const StoryManagement = () => {
           ></Table>
         )}
         <Modal
-          title="Cập nhật truyện"
+          title="Đăng chương mới"
           open={isEditing}
           okText="Lưu"
           cancelText="Hủy"
           onCancel={() => {
             resetEditing();
           }}
-          onOk={onOkEditStory}
-          afterClose={() => {
-            setSelectedStatusId(undefined);
-            setSelectedTypeStoryId(undefined);
-          }}
+          onOk={onOk}
+          afterClose={() => {}}
           style={{ top: "50px" }}
         >
+          <div className="update-story-item-popup" style={{ marginTop: 20 }}>
+            <div style={{ width: "180px" }}>Tên truyện: </div>
+            <div style={{ width: "100%", fontWeight: "bold" }}>
+              {editingStory?.title}
+            </div>
+          </div>
+          <div className="update-story-item-popup" style={{ marginTop: 20 }}>
+            <div style={{ width: "180px" }}>Chương hiện tại: </div>
+            <div style={{ width: "100%", fontWeight: "bold" }}>
+              {editingStory?.currentChapter}
+            </div>
+          </div>
+          <div className="update-story-item-popup" style={{ marginTop: 20 }}>
+            <div style={{ width: "180px", marginBottom: 17 }}>Chương mới: </div>
+            <Form
+              name="numeric_input_form"
+              initialValues={{ number: "" }}
+              style={{ height: 50, width: "100%" }}
+            >
+              <Form.Item
+                name="number"
+                rules={[
+                  {
+                    pattern: /^\d*$/,
+                    message: "Không được nhập kí tự khác kí tự số",
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="Nhập số"
+                  onChange={(e) => {
+                    setChapter(e.target.value);
+                  }}
+                />
+              </Form.Item>
+            </Form>
+          </div>
           <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Tiêu đề: </div>
+            <div style={{ width: "180px" }}>Tiêu đề chương: </div>
             <Input
-              value={editingStory?.title}
               onChange={(e) => {
-                setEditingStory((pre) => {
-                  return { ...pre, title: e.target.value };
-                });
+                setTitleChapter(e.target.value);
               }}
             />
           </div>
 
           <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Tên khác: </div>
-            <Input
-              value={editingStory?.otherTitle}
-              onChange={(e) => {
-                setEditingStory((pre) => {
-                  return { ...pre, otherTitle: e.target.value };
-                });
-              }}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Chương hiện tại: </div>
-            <Input
-              value={editingStory?.currentChapter}
-              onChange={(e) => {
-                setEditingStory((pre) => {
-                  return { ...pre, currentChapter: e.target.value };
-                });
-              }}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Tác giả: </div>
-            <Input
-              value={editingStory?.author}
-              onChange={(e) => {
-                setEditingStory((pre) => {
-                  return { ...pre, author: e.target.value };
-                });
-              }}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Trạng thái: </div>
-            <Select
-              defaultValue={selectedStatusId}
-              style={{ width: "100%" }}
-              onChange={(value) => {
-                setSelectedStatusId(value);
-                // setEditingStory((pre) => {
-                //   return { ...pre, status: "Đã hoàn thành", statusId: value };
-                // });
-              }}
-              options={[
-                { value: 1, label: "Đã hoàn thành" },
-                { value: 2, label: "Đang tiến hành" },
-                { value: 3, label: "Tạm dừng" },
-              ]}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Tóm tắt: </div>
-            <Input.TextArea
-              value={editingStory?.summary}
-              rows={4}
-              onChange={(e) => {
-                setEditingStory((pre) => {
-                  return { ...pre, summary: e.target.value };
-                });
-              }}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "100px" }}>Loại truyện:</div>
-            <Select
-              defaultValue={selectedTypeStoryId}
-              style={{ width: "100%" }}
-              onChange={(value) => {
-                setSelectedTypeStoryId(value);
-                // setEditingStory((pre) => {
-                //   return { ...pre, type: "Truyện tranh", typeId: value };
-                // });
-              }}
-              options={[
-                { value: 1, label: "Truyện tranh" },
-                { value: 2, label: "Truyện chữ" },
-                { value: 3, label: "Audio" },
-              ]}
-            />
-          </div>
-
-          <div className="update-story-item-popup">
-            <div style={{ width: "85px" }}>Ảnh bìa: </div>
-            <ImageUploadComponent
-              ref={uploadRef}
-              setSelectedImage={setSelectedImage}
-            />
+            <div style={{ width: "180px" }}>Ảnh bìa: </div>
+            <div style={{ width: "100%" }}>
+              <MultiImageUpload
+                ref={uploadRef}
+                setSelectedImage={setSelectedImage}
+              />
+            </div>
           </div>
         </Modal>
       </div>
@@ -554,4 +371,4 @@ const StoryManagement = () => {
   );
 };
 
-export default StoryManagement;
+export default ComicChapterCreation;

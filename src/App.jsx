@@ -18,6 +18,7 @@ import StoryCreation from "./pages/story/StoryCreation";
 import WeekAnalysis from "./pages/analysis/WeekAnalysis";
 import MonthAnalysis from "./pages/analysis/MonthAnalysis";
 import YearAnalysis from "./pages/analysis/YearAnalysis";
+import ComicChapterCreation from "./pages/comic/ComicChapterCreation";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -25,10 +26,13 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Authen */}
         <Route
           path="/"
           element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />}
         />
+
+        {/* Home */}
         <Route
           path="/dashboard"
           element={
@@ -42,6 +46,8 @@ function App() {
             )
           }
         />
+
+        {/* Truyện */}
         <Route
           path="/truyen/tao-truyen"
           element={
@@ -79,6 +85,21 @@ function App() {
           }
         />
 
+        {/* Truyện tranh */}
+        <Route
+          path="/truyen-tranh/chuong-moi"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <ComicChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        {/* Thống kê */}
         <Route
           path="/thong-ke/tuan"
           element={

@@ -75,7 +75,6 @@ const MonthAnalysis = () => {
     boxSizing: "border-box",
     borderRadius: "2px",
     border: "1px solid #d9d9d9",
-    boxSizing: "border-box",
   };
 
   return (
