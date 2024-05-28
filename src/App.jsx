@@ -19,6 +19,7 @@ import WeekAnalysis from "./pages/analysis/WeekAnalysis";
 import MonthAnalysis from "./pages/analysis/MonthAnalysis";
 import YearAnalysis from "./pages/analysis/YearAnalysis";
 import ComicChapterCreation from "./pages/comic/ComicChapterCreation";
+import ComicManagement from "./pages/comic/ComicManagement";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -92,6 +93,18 @@ function App() {
             isAuthenticated ? (
               <Dashboard>
                 <ComicChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/truyen-tranh/quan-ly"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <ComicManagement />
               </Dashboard>
             ) : (
               <Navigate to="/" />

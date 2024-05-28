@@ -6,11 +6,11 @@ import MultiImageUpload from "../../components/MultiImageUpload";
 
 const ComicChapterCreation = () => {
   const [dataSource, setDataSource] = useState([]);
-  const [editingStory, setEditingStory] = useState();
+  const [editingStory, setEditingStory] = useState(); // comic is selected
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState([]);
-  const [titleChapter, setTitleChapter] = useState(null);
+  const [titleChapter, setTitleChapter] = useState("");
   const [chapter, setChapter] = useState(null);
 
   const uploadRef = useRef(null);
@@ -21,18 +21,31 @@ const ComicChapterCreation = () => {
   };
 
   const onOk = async () => {
-    const formData = new FormData();
-    if (editingStory.title) {
-      formData.append("title", editingStory.title);
+    if (!chapter) {
+      message.error("Vui lòng nhập số chương muốn đăng!");
+      return;
     }
-    if (selectedImage) {
-      formData.append("cover", selectedImage.originFileObj);
+    if (
+      selectedImage === null ||
+      selectedImage === undefined ||
+      selectedImage.length === 0
+    ) {
+      message.error("Vui lòng chọn ảnh cho chương truyện!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", titleChapter ? titleChapter : "");
+    if (selectedImage.length > 0) {
+      selectedImage.forEach((image, index) => {
+        formData.append(`image`, image.originFileObj);
+      });
     }
 
     try {
       const { userToken, user } = JSON.parse(localStorage.getItem("user_data"));
-      const response = await axiosPrivate.put(
-        `story/update/${editingStory.id}`,
+      const response = await axiosPrivate.post(
+        `comic/chapter/create/${editingStory.id}/${chapter}`,
         formData,
         {
           headers: {
@@ -44,14 +57,14 @@ const ComicChapterCreation = () => {
       if (response.data.code === 1000) {
         resetEditing();
         fetchAllStory();
-        message.success("Update successfully");
+        message.success("Thêm chương mới thành công");
       } else {
         resetEditing();
-        message.error("Update Error");
+        message.error("Đã xảy ra lỗi. Vui lòng thử lại");
       }
     } catch (error) {
       console.error("Error uploading the form data", error);
-      message.error("Update Error");
+      message.error("Thêm chương mới thất bại");
     }
   };
 
@@ -59,6 +72,8 @@ const ComicChapterCreation = () => {
     setIsEditing(false);
     setEditingStory(null);
     setSelectedImage([]);
+    setChapter(null);
+    setTitleChapter("");
     if (uploadRef.current) {
       uploadRef.current.clearImages();
     }
@@ -311,19 +326,29 @@ const ComicChapterCreation = () => {
           style={{ top: "50px" }}
         >
           <div className="update-story-item-popup" style={{ marginTop: 20 }}>
-            <div style={{ width: "180px" }}>Tên truyện: </div>
+            <div style={{ width: "200px" }}>Tên truyện: </div>
             <div style={{ width: "100%", fontWeight: "bold" }}>
               {editingStory?.title}
             </div>
           </div>
           <div className="update-story-item-popup" style={{ marginTop: 20 }}>
-            <div style={{ width: "180px" }}>Chương hiện tại: </div>
+            <div style={{ width: "200px" }}>Chương hiện tại: </div>
             <div style={{ width: "100%", fontWeight: "bold" }}>
               {editingStory?.currentChapter}
             </div>
           </div>
           <div className="update-story-item-popup" style={{ marginTop: 20 }}>
-            <div style={{ width: "180px", marginBottom: 17 }}>Chương mới: </div>
+            <div
+              style={{
+                width: "200px",
+                marginBottom: 17,
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              Chương mới:{" "}
+              <div style={{ color: "red", marginLeft: 5 }}>{` (*)`}</div>
+            </div>
             <Form
               name="numeric_input_form"
               initialValues={{ number: "" }}
@@ -340,6 +365,7 @@ const ComicChapterCreation = () => {
               >
                 <Input
                   placeholder="Nhập số"
+                  value={chapter}
                   onChange={(e) => {
                     setChapter(e.target.value);
                   }}
@@ -348,8 +374,9 @@ const ComicChapterCreation = () => {
             </Form>
           </div>
           <div className="update-story-item-popup">
-            <div style={{ width: "180px" }}>Tiêu đề chương: </div>
+            <div style={{ width: "200px" }}>Tiêu đề chương: </div>
             <Input
+              value={titleChapter}
               onChange={(e) => {
                 setTitleChapter(e.target.value);
               }}
@@ -357,7 +384,12 @@ const ComicChapterCreation = () => {
           </div>
 
           <div className="update-story-item-popup">
-            <div style={{ width: "180px" }}>Ảnh bìa: </div>
+            <div
+              style={{ width: "200px", display: "flex", flexDirection: "row" }}
+            >
+              Danh sách ảnh:{" "}
+              <div style={{ color: "red", marginLeft: 5 }}>{` (*)`}</div>
+            </div>
             <div style={{ width: "100%" }}>
               <MultiImageUpload
                 ref={uploadRef}
