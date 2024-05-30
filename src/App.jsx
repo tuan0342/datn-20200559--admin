@@ -20,6 +20,8 @@ import MonthAnalysis from "./pages/analysis/MonthAnalysis";
 import YearAnalysis from "./pages/analysis/YearAnalysis";
 import ComicChapterCreation from "./pages/comic/ComicChapterCreation";
 import ComicManagement from "./pages/comic/ComicManagement";
+import NovelChapterCreation from "./pages/novel/NovelChapterCreation";
+import NovelManagement from "./pages/novel/NovelManagement";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -105,6 +107,32 @@ function App() {
             isAuthenticated ? (
               <Dashboard>
                 <ComicManagement />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        {/* Truyện chữ */}
+        <Route
+          path="/truyen-chu/chuong-moi"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <NovelChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/truyen-chu/quan-ly"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <NovelManagement />
               </Dashboard>
             ) : (
               <Navigate to="/" />
