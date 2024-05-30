@@ -8,7 +8,7 @@ import {
   Space,
   Button,
 } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -26,6 +26,8 @@ const StoryManagement = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedStatusId, setSelectedStatusId] = useState(null);
   const [selectedTypeStoryId, setSelectedTypeStoryId] = useState(null);
+
+  const uploadRef = useRef(null);
 
   const onDeleteStory = (record) => {
     Modal.confirm({
@@ -140,6 +142,9 @@ const StoryManagement = () => {
     setIsEditing(false);
     setEditingStory(null);
     setSelectedImage(null);
+    if (uploadRef.current) {
+      uploadRef.current.clearImages();
+    }
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -203,6 +208,19 @@ const StoryManagement = () => {
     clearFilters();
   };
 
+  const getStatusStyle = (text) => {
+    switch (text) {
+      case "Tạm dừng":
+        return { color: "red" };
+      case "Đang tiến hành":
+        return { color: "blue" };
+      case "Đã hoàn thành":
+        return { color: "#009E60" };
+      default:
+        return {};
+    }
+  };
+
   const storyColumns = [
     {
       title: "Id",
@@ -218,7 +236,7 @@ const StoryManagement = () => {
       dataIndex: "cover",
       key: "cover",
       render: (text) => (
-        <div className="image-row-table">
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <img
             src={
               typeof text === "string" && text.includes("http")
@@ -280,7 +298,11 @@ const StoryManagement = () => {
       ],
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       width: "8%",
-      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
+      render: (text) => (
+        <div style={{ textAlign: "center", ...getStatusStyle(text) }}>
+          {text}
+        </div>
+      ),
     },
     {
       title: "View",
@@ -521,7 +543,10 @@ const StoryManagement = () => {
 
           <div className="update-story-item-popup">
             <div style={{ width: "85px" }}>Ảnh bìa: </div>
-            <ImageUploadComponent setSelectedImage={setSelectedImage} />
+            <ImageUploadComponent
+              ref={uploadRef}
+              setSelectedImage={setSelectedImage}
+            />
           </div>
         </Modal>
       </div>

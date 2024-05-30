@@ -18,6 +18,10 @@ import StoryCreation from "./pages/story/StoryCreation";
 import WeekAnalysis from "./pages/analysis/WeekAnalysis";
 import MonthAnalysis from "./pages/analysis/MonthAnalysis";
 import YearAnalysis from "./pages/analysis/YearAnalysis";
+import ComicChapterCreation from "./pages/comic/ComicChapterCreation";
+import ComicManagement from "./pages/comic/ComicManagement";
+import NovelChapterCreation from "./pages/novel/NovelChapterCreation";
+import NovelManagement from "./pages/novel/NovelManagement";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -25,10 +29,13 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Authen */}
         <Route
           path="/"
           element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />}
         />
+
+        {/* Home */}
         <Route
           path="/dashboard"
           element={
@@ -42,6 +49,8 @@ function App() {
             )
           }
         />
+
+        {/* Truyện */}
         <Route
           path="/truyen/tao-truyen"
           element={
@@ -79,6 +88,59 @@ function App() {
           }
         />
 
+        {/* Truyện tranh */}
+        <Route
+          path="/truyen-tranh/chuong-moi"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <ComicChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/truyen-tranh/quan-ly"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <ComicManagement />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        {/* Truyện chữ */}
+        <Route
+          path="/truyen-chu/chuong-moi"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <NovelChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/truyen-chu/quan-ly"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <NovelManagement />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        {/* Thống kê */}
         <Route
           path="/thong-ke/tuan"
           element={

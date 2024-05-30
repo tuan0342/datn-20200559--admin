@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { Upload, Modal, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
@@ -11,7 +11,7 @@ const getBase64 = (file) => {
   });
 };
 
-const ImageUploadComponent = ({ setSelectedImage }) => {
+const ImageUploadComponent = forwardRef(({ setSelectedImage }, ref) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
@@ -38,6 +38,15 @@ const ImageUploadComponent = ({ setSelectedImage }) => {
       setSelectedImage(null);
     }
   };
+
+  const clearImages = () => {
+    setFileList([]);
+    setSelectedImage([]);
+  };
+
+  useImperativeHandle(ref, () => ({
+    clearImages,
+  }));
 
   return (
     <div>
@@ -66,6 +75,6 @@ const ImageUploadComponent = ({ setSelectedImage }) => {
       </Modal>
     </div>
   );
-};
+});
 
 export default ImageUploadComponent;
