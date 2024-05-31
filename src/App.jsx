@@ -22,6 +22,7 @@ import ComicChapterCreation from "./pages/comic/ComicChapterCreation";
 import ComicManagement from "./pages/comic/ComicManagement";
 import NovelChapterCreation from "./pages/novel/NovelChapterCreation";
 import NovelManagement from "./pages/novel/NovelManagement";
+import AudioChapterCreation from "./pages/audio/AudioChapterCreation";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -134,6 +135,30 @@ function App() {
               <Dashboard>
                 <NovelManagement />
               </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        {/* Audio */}
+        <Route
+          path="/audio/chuong-moi"
+          element={
+            isAuthenticated ? (
+              <Dashboard>
+                <AudioChapterCreation />
+              </Dashboard>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/audio/quan-ly"
+          element={
+            isAuthenticated ? (
+              <Dashboard>{/* <NovelManagement /> */}</Dashboard>
             ) : (
               <Navigate to="/" />
             )
