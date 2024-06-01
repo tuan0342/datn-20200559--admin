@@ -23,6 +23,7 @@ import ComicManagement from "./pages/comic/ComicManagement";
 import NovelChapterCreation from "./pages/novel/NovelChapterCreation";
 import NovelManagement from "./pages/novel/NovelManagement";
 import AudioChapterCreation from "./pages/audio/AudioChapterCreation";
+import AudioManagement from "./pages/audio/AudioManagement";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -158,7 +159,9 @@ function App() {
           path="/audio/quan-ly"
           element={
             isAuthenticated ? (
-              <Dashboard>{/* <NovelManagement /> */}</Dashboard>
+              <Dashboard>
+                <AudioManagement />
+              </Dashboard>
             ) : (
               <Navigate to="/" />
             )
